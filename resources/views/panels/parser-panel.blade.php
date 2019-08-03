@@ -131,6 +131,12 @@
         </ol>
     </nav>
     <div class="card-body">
+        <div class="container">
+            <div class="card-body">
+
+                {!! $chart1->container() !!}
+            </div>
+        </div>
         <h2 class="lead">
             Select site:
         </h2>
@@ -186,6 +192,7 @@
             </p>
 
         @endrole
+            {!! $chart1->script() !!}
 
     </div>
 </div>

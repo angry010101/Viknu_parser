@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 use App\Models\Sites;
+use App\Models\Posts;
 use Validator;
+use App\Charts\PostList;
 
 class ParserController extends Controller
 {
@@ -60,10 +62,18 @@ class ParserController extends Controller
     public function index()
     {
         $sites = Sites::all();
-        $data = [
-            'sites'         => $sites,
-        ];
-        return view('pages.user.parser')->with($data);
+
+        $today_users = Posts::whereDate('created_at', today())->count();
+        $yesterday_users = Posts::whereDate('created_at', today()->subDays(1))->count();
+        $users_2_days_ago = Posts::whereDate('created_at', today()->subDays(2))->count();
+
+
+        $chart1 = new PostList;
+        $chart1->title('Статистика новых статей по дням');
+        $chart1->labels(['Позавчера', 'Вчера', 'Сегодня']);
+        $chart1->dataset('Статьи', 'line', [$users_2_days_ago, $yesterday_users, $today_users]);
+
+        return view('pages.user.parser', compact('sites', 'chart1'));
     }
 
 //    public function posts() {

@@ -33,6 +33,6 @@ class Posts extends Model
         'bio',
         'title',
         'text',
-        'date',
+        'created_at',
     ];
 }
