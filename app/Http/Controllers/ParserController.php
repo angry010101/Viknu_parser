@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 use App\Models\Sites;
 use App\Models\Posts;
-use Validator;
+use Goutte\Client;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Charts\PostList;
 
 class ParserController extends Controller
@@ -17,24 +19,25 @@ class ParserController extends Controller
     {
         $this->middleware('auth');
     }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),
             [
-                'sitename'                  => 'required|max:255',
-                'siteurl'            => 'required|max:255',
-                'sitelang'             => 'required|max:3',
-                'titleelement'                 => 'required|max:255',
-                'dataelement'              => 'required|max:255',
-                'textelement' => 'required|max:255',
+                'sitename'      => 'required|max:255',
+                'siteurl'       => 'required|max:255',
+                'sitelang'      => 'required|max:3',
+                'link'          => 'required|max:255',
+                'title'         => 'required|max:255',
+                'text'          => 'required|max:255',
             ],
             [
-                'sitename.required'       => 'Введите название источника!',
-                'siteurl.required'       => 'Введите адрес источника!',
-                'sitelang.required'       => 'Введите адрес источника!',
-                'titleelement.required'       => 'Введите элемент заголовка!',
-                'dataelement.required'       => 'Введите элемент даты!',
-                'textelement.required'       => 'Введите элемент текста!',
+                'sitename.required'      => 'Укажите название источника!',
+                'siteurl.required'       => 'Укажите адрес источника!',
+                'sitelang.required'      => 'Укажите язык источника!',
+                'link.required'          => 'Укажите элемент ссылки!',
+                'title.required'         => 'Укажите элемент заголовка!',
+                'text.required'          => 'Укажите элемент текста!',
             ]
         );
 
@@ -43,16 +46,16 @@ class ParserController extends Controller
         }
 
         $site = Sites::create([
-            'sitename'             => $request->input('siteurl'),
-            'first_name'       => $request->input('siteurl'),
-            'last_name'        => $request->input('sitelang'),
-            'email'            => $request->input('titleelement'),
-            'email'            => $request->input('dataelement'),
-            'email'            => $request->input('textelement'),
+            'name'             => $request->input('sitename'),
+            'url'              => $request->input('siteurl'),
+            'lang'             => $request->input('sitelang'),
+            'link'             => $request->input('link'),
+            'title'            => $request->input('title'),
+            'text'             => $request->input('text'),
         ]);
         $site->save();
 
-        return redirect('site')->with('success', 'Успешно!');
+        return back()->with('success', 'Успешно!');
     }
     /**
      * Show the application dashboard.
@@ -76,8 +79,82 @@ class ParserController extends Controller
         return view('pages.user.parser', compact('sites', 'chart1'));
     }
 
-//    public function posts() {
-//        // Your logic here
-//        return view('posts');
-//    }
+    /**
+     * Parse selected sites.
+     * @param Request $req
+     * @return array|string|null
+     */
+    public function parse(Request $req)
+    {
+        $sites = [];
+
+        $selected = json_decode($req->getContent(), false);
+
+        foreach ($selected as $id)
+        {
+            $sites[] = Sites::find($id);
+        }
+
+        $client = new Client();
+
+        $client->setHeader('headers/User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36');
+
+        $all = [];
+
+        if(!empty($sites)) {
+            foreach ($sites as $site) {
+
+                $articles = [];
+
+                $siteLink = $site->url;
+
+                $siteCrawler = $client->request('GET', $siteLink);
+
+                $links = $siteCrawler->filter($site->link)->extract(['href']);
+
+                foreach ($links as $link){
+
+                    if ($link[0] === '/' || strpos($link, $siteLink) === 0){
+                        if($link[0] === '/') {
+                            if($siteLink[-1] === '/'){
+                                $siteLink = rtrim($siteLink, '/');
+                            }
+                            $link = $siteLink . $link;
+                        }
+                        $articleCrawler = $client->request('GET', $link);
+
+                        $articleCrawler->filter('script')->each(function ($crawler) {
+                            foreach ($crawler as $node) {
+                                $node->parentNode->removeChild($node);
+                            }
+                        });
+
+                        $title = $articleCrawler->filter($site->title);
+
+
+                        $text = $articleCrawler->filter($site->text);
+
+
+                        if($title->count() !== 0 && $text->count() !== 0){
+                            $article = [$title->text(), $text->text(), $link];
+
+                            $articles[] = $article;
+                        }
+                    }
+                }
+                foreach ($articles as $article){
+                    $post = Posts::firstOrCreate([
+                        'site'  => $siteLink,
+                        'title' => $article[0],
+                        'text'  => $article[1],
+                    ]);
+
+                    $post->save();
+                }
+            }
+        }
+
+        return('succes');
+    }
+
 }

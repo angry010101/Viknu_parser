@@ -10,22 +10,33 @@
 @endphp
 
 <script>
-    function move() {
-        $('#parsing-data').attr("disabled", true);
-        var elem = document.getElementById("progress-parsing-bar");
-        var width = 10;
-        var id = setInterval(frame, 10);
-        function frame() {
-            if (width >= 100) {
+    function parse() {
+
+        $('#progress-parsing-bar').width('50%');
+
+        var selected = [];
+        $('#sites input:checked').each(function() {
+            selected.push($(this).attr('name'));
+        });
+
+
+        $.ajax({
+            url:'/parse',
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{csrf_token()}}'
+            },
+            data: JSON.stringify(selected),
+        }).done(function (data) {
+            if(data == 'succes') {
+                $('#progress-parsing-bar').width('100%');
                 $('#view-data').removeAttr("hidden");
                 $('#view-data').removeAttr("disabled");
-                clearInterval(id);
-                width = 10;
-            } else {
-                width++;
-                $('#progress-parsing-bar').width(width * 1 + '%').attr('aria-valuenow', width);
+            }else {
+                alert('Произошла ошибка, перезагрузите страницу!')
             }
-        }
+        });
+
     }
 
     function save() {
@@ -43,14 +54,13 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <form>
-                {!! Form::open(array('route' => 'parser.store', 'method' => 'POST', 'role' => 'form')) !!}
-                    {!! csrf_field() !!}
+            <div class="modal-body" style="padding:1rem 2rem;">
+                <form action="/savesite" method="POST">
+                    @csrf
 
                     <div class="form-group has-feedback row {{ $errors->has('sitename') ? ' has-error ' : '' }}">
-                        <label for="exampleInputEmail1">Site name</label>
-                        {!! Form::text('sitename', NULL, array('id' => 'sitename', 'class' => 'form-control pg-5', 'placeholder' => "Enter site Name")) !!}
+                        <label for="sitename">Site name</label>
+                        <input id="sitename" name="sitename" class="form-control pg-5" placeholder="Enter site Name">
                         <small id="emailHelp" class="form-text text-muted">Укажите название которое будет отображаться в списке.</small>
                         @if ($errors->has('sitename'))
                             <span class="help-block">
@@ -59,8 +69,8 @@
                         @endif
                     </div>
                     <div class="form-group has-feedback row {{ $errors->has('siteurl') ? ' has-error ' : '' }}">
-                        <label for="exampleInputEmail1">Site URL</label>
-                        {!! Form::text('siteurl', NULL, array('id' => 'siteurl', 'class' => 'form-control', 'placeholder' => "Enter site URL")) !!}
+                        <label for="siteurl">Site URL</label>
+                        <input id="siteurl" name="siteurl" class="form-control pg-5" placeholder="Enter site URL">
                         <small id="emailHelp" class="form-text text-muted">Укажите полный адрес ресурса (https://telegram.org/)</small>
                         @if ($errors->has('siteurl'))
                             <span class="help-block">
@@ -69,8 +79,8 @@
                         @endif
                     </div>
                     <div class="form-group has-feedback row {{ $errors->has('sitelang') ? ' has-error ' : '' }}">
-                        <label for="exampleInputEmail1">Site lang</label>
-                        {!! Form::text('sitelang', NULL, array('id' => 'sitelang', 'class' => 'form-control', 'placeholder' => "Enter sitelang")) !!}
+                        <label for="sitelang">Site lang</label>
+                        <input id="sitelang" name="sitelang" class="form-control pg-5" placeholder="Enter site language">
                         <small id="emailHelp" class="form-text text-muted">Укажите язык (RU/UA/EU)</small>
                         @if ($errors->has('sitelang'))
                             <span class="help-block">
@@ -78,30 +88,29 @@
                                         </span>
                         @endif
                     </div>
+                    <div class="form-group has-feedback row {{ $errors->has('linkelement') ? ' has-error ' : '' }}">
+                        <label for="link">Link Element</label>
+                        <input id="link" name="link" class="form-control pg-5" placeholder="Enter Link element">
+                        <small id="emailHelp" class="form-text text-muted">Укажите элемент, содержащий ссылку на новость (div > a .news_title)</small>
+                        @if ($errors->has('linkelement'))
+                            <span class="help-block">
+                                            <strong>{{ $errors->first('linkelement') }}</strong>
+                                        </span>
+                        @endif
+                    </div>
                     <div class="form-group has-feedback row {{ $errors->has('titleelement') ? ' has-error ' : '' }}">
-                        <label for="exampleInputEmail1">Title Element</label>
-                        {!! Form::text('titleelement', NULL, array('id' => 'titleelement', 'class' => 'form-control', 'placeholder' => "Enter title element")) !!}
-                        <small id="emailHelp" class="form-text text-muted">Укажите элемент, содержащий Title</small>
+                        <label for="title">Title element</label>
+                        <input id="title" name="title" class="form-control pg-5" placeholder="Enter Title Element">
+                        <small id="emailHelp" class="form-text text-muted">Укажите элемент, содержащий заголовок новости (h1 .title)</small>
                         @if ($errors->has('titleelement'))
                             <span class="help-block">
                                             <strong>{{ $errors->first('titleelement') }}</strong>
                                         </span>
                         @endif
                     </div>
-                    <div class="form-group has-feedback row {{ $errors->has('dataelement') ? ' has-error ' : '' }}">
-                        <label for="exampleInputEmail1">Data element</label>
-                        {!! Form::text('dataelement', NULL, array('id' => 'dataelement', 'class' => 'form-control', 'placeholder' => "Enter data element")) !!}
-                        <small id="emailHelp" class="form-text text-muted">Укажите элемент, содержащий Data</small>
-                        @if ($errors->has('dataelement'))
-                            <span class="help-block">
-                                            <strong>{{ $errors->first('dataelement') }}</strong>
-                                        </span>
-                        @endif
-                    </div>
                     <div class="form-group has-feedback row {{ $errors->has('textelement') ? ' has-error ' : '' }}">
-                        <label for="exampleInputEmail1">Text element</label>
-                        {!! Form::text('textelement', NULL, array('id' => 'textelement', 'class' => 'form-control', 'placeholder' => "Enter text element")) !!}
-                        <small id="emailHelp" class="form-text text-muted">Укажите элемент, содержащий Text</small>
+                        <label for="text">Text element</label>
+                        <input id="text" name="text" class="form-control pg-5" placeholder="Enter Text element">                        <small id="emailHelp" class="form-text text-muted">Укажите элемент, содержащий текст новости (div > p .fulltext)</small>
                         @if ($errors->has('textelement'))
                             <span class="help-block">
                                             <strong>{{ $errors->first('textelement') }}</strong>
@@ -115,8 +124,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-                        {!! Form::button('Добавить', array('class' => 'btn btn-primary','type' => 'submit' )) !!}
-                        {!! Form::close() !!}
+                        <button type="submit" class="btn btn-primary">Submitt</button>
                     </div>
                 </form>
             </div>
@@ -140,14 +148,14 @@
         <h2 class="lead">
             Select site:
         </h2>
-        <p>
+        <div id="sites">
             @foreach ($sites as $site)
             <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="defaultUnchecked{{$site->id}}" checked>
+                <input type="checkbox" name="{{$site->id}}" class="custom-control-input" id="defaultUnchecked{{$site->id}}" checked>
                 <label class="custom-control-label" for="defaultUnchecked{{$site->id}}">{{$site->name}} <code>{{$site->lang}}</code></label>
             </div>
             @endforeach
-        </p>
+        </div>
         <p>
             <small>
                 Data has already been parsed.
@@ -187,7 +195,7 @@
 
             <p>
                 <button type="button" class="btn btn-outline-primary" onclick="save()">Сохранить изменения</button>
-                <button id="parsing-data" type="button" class="btn btn-success" onclick="move()">Сбор данных</button>
+                <button id="parsing-data" type="button" class="btn btn-success" onclick="parse()">Сбор данных</button>
                 <button onclick="window.location='{{ route("posts") }}'" id="view-data" type="button" class="btn btn-info" hidden>Просмотр данных</button>
             </p>
 

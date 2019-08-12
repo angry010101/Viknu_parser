@@ -32,5 +32,9 @@ class Sites extends Model
         'name',
         'url',
         'lang',
+        'link',
+        'title',
+        'text',
+        'date',
     ];
 }
