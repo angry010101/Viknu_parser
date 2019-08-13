@@ -2,17 +2,17 @@
 
 return [
 
-    'app'               => 'VIKNU Parser',
+    'app'               => 'ВИКНУ Парсер',
     'app2'              => 'v :version',
-    'home'              => 'Home',
-    'login'             => 'Login',
-    'logout'            => 'Logout',
-    'register'          => 'Register',
-    'resetPword'        => 'Reset Password',
+    'home'              => 'Главная',
+    'login'             => 'Вход',
+    'logout'            => 'Выход',
+    'register'          => 'Регистрация',
+    'resetPword'        => 'Восстановление пароля',
     'toggleNav'         => 'Toggle Navigation',
-    'profile'           => 'Profile',
-    'editProfile'       => 'Edit Profile',
-    'createProfile'     => 'Create Profile',
+    'profile'           => 'Профиль',
+    'editProfile'       => 'Изменить профиль',
+    'createProfile'     => 'Создать профиль',
     'adminDropdownNav'  => 'Admin',
 
     'activation'        => 'Registration Started  | Activation Required',

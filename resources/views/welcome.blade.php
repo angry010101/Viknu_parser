@@ -70,8 +70,8 @@
             @if (Route::has('login'))
                 <div class="top-right links">
                     @if (Auth::check())
-                        <a href="{{ url('/home') }}">Home</a>
-                        <a href="{{ url('/parser') }}">Parser</a>
+                        <a href="{{ url('/home') }}">Главная</a>
+                        <a href="{{ url('/parser') }}">Сбор новостей</a>
                         <a class="dropdown-item {{ Request::is('profile/'.Auth::user()->name, 'profile/'.Auth::user()->name . '/edit') ? 'active' : null }}" href="{{ url('/profile/'.Auth::user()->name) }}">
                             {!! trans('titles.profile') !!}
                         </a>
@@ -81,26 +81,30 @@
                             {{ __('Logout') }}
                         </a>
                     @else
-                        <a href="{{ url('/login') }}">Login</a>
-                        <a href="{{ url('/register') }}">Register</a>
+                        <a href="{{ url('/login') }}">Вход</a>
+                        <a href="{{ url('/register') }}">Регистрация пользователя</a>
                     @endif
                 </div>
             @endif
             <div class="content">
                 <div class="title m-b-md">
+                    <div class="text-center">
+                        <img src="/images/viknu_logo.png" class="rounded" alt="...">
+                    </div>
                     {!! trans('titles.app') !!}<br />
                     <small>
                         {{ trans('titles.app2', ['version' => config('settings.app_project_version')]) }}
                     </small>
+
                 </div>
                 <div class="links">
                     @if (Route::has('login'))
                         @if (Auth::check())
                     <a href="{{ url('/home') }}">Home</a>
-                    <a href="{{ url('/parser') }}">Parser</a>
+                    <a href="{{ url('/parser') }}">Сбор новостей</a>
                     @else
-                    <a href="{{ url('/login') }}">Login</a>
-                    <a href="{{ url('/register') }}">Register</a>
+                    <a href="{{ url('/login') }}">Вход</a>
+                    <a href="{{ url('/register') }}">Регистрация пользователя</a>
                     @endif
                     @endif
                 </div>
