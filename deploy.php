@@ -37,11 +37,6 @@ foreach($commands AS $command){
 </head>
 <body style="background-color: #000000; color: #FFFFFF; font-weight: bold; padding: 0 10px;">
 <pre>
- ____________________________
-|                            |
-| Git Deployment Script v0.1 |
-|      github.com/riodw 2019 |
-|____________________________|
 
 <?php echo $output; ?>
 </pre>

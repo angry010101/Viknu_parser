@@ -28,7 +28,7 @@
             },
             data: JSON.stringify(selected),
         }).done(function (data) {
-            if(data == 'succes') {
+            if(data == 'success') {
                 $('#progress-parsing-bar').width('100%');
                 $('#view-data').removeAttr("hidden");
                 $('#view-data').removeAttr("disabled");
@@ -189,7 +189,6 @@
         </div>
         </p>
 
-        @role('admin')
 
             <hr>
 
@@ -199,7 +198,6 @@
                 <button onclick="window.location='{{ route("posts") }}'" id="view-data" type="button" class="btn btn-info" hidden>Просмотр данных</button>
             </p>
 
-        @endrole
             {!! $chart1->script() !!}
 
     </div>

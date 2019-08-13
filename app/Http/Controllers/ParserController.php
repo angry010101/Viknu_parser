@@ -154,7 +154,7 @@ class ParserController extends Controller
             }
         }
 
-        return('succes');
+        return('success');
     }
 
 }
