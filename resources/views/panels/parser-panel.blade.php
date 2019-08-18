@@ -39,6 +39,24 @@
 
     }
 
+    function sentiment() {
+
+        $.ajax({
+            url:'/sentiment',
+            type: 'GET',
+            headers: {
+                'X-CSRF-TOKEN': '{{csrf_token()}}'
+            },
+        }).done(function (data) {
+            if(data) {
+                alert(data);
+            }else {
+                alert('Произошла ошибка, перезагрузите страницу!')
+            }
+        });
+
+    }
+
     function save() {
                 $('#view-data').attr("disabled", true);
                 $('#parsing-data').attr("disabled", false);
@@ -195,6 +213,7 @@
             <p>
                 <button type="button" class="btn btn-outline-primary" onclick="save()">Сохранить изменения</button>
                 <button id="parsing-data" type="button" class="btn btn-success" onclick="parse()">Сбор данных</button>
+                <button id="parsing-data" type="button" class="btn btn-info" onclick="sentiment()">Анализ данных (test)</button>
                 <button onclick="window.location='{{ route("posts") }}'" id="view-data" type="button" class="btn btn-info" hidden>Просмотр данных</button>
             </p>
 

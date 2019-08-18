@@ -143,5 +143,7 @@ Route::redirect('/php', '/phpinfo', 301);
 
 //Route to parse data from selected sites
 Route::post('parse', ['as' => 'parse', 'uses' => 'ParserController@parse']);
-
 Route::post('savesite', ['as' => 'savesite', 'uses' => 'ParserController@store']);
+
+//Analytics sentiment
+Route::get('sentiment', ['as' => 'sentiment', 'uses' => 'ParserController@sentiment']);

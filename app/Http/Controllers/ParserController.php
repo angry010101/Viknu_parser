@@ -7,6 +7,8 @@ use Goutte\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Charts\PostList;
+use Google\Cloud\Core\ServiceBuilder;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class ParserController extends Controller
 {
@@ -155,6 +157,31 @@ class ParserController extends Controller
         }
 
         return('success');
+    }
+
+
+    public function sentiment()
+    {
+
+        $tr = new GoogleTranslate();
+        $tr->setSource();
+        $tr->setTarget('en');
+
+        $cloud = new ServiceBuilder([
+            'keyFilePath' => base_path('public/js/Sentiment Parser-125fec859535.json'),
+            'projectId' => 'sample-207012'
+        ]);
+
+        $language = $cloud->language();
+
+        // The text to analyse
+        $text = $tr->translate('Привет мир!');
+
+        // Detect the sentiment of the text
+        $annotation = $language->analyzeSentiment($text);
+        $sentiment = $annotation->sentiment();
+
+        echo 'Source text: ' . $text . 'Sentiment Score: ' . $sentiment['score'] . ', Magnitude: ' . $sentiment['magnitude'];
     }
 
 }
