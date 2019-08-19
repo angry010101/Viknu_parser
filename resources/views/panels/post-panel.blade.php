@@ -56,7 +56,7 @@
                 <P><code>{{$post->date}} --- {{$post->site}}</code></P>
                 <p id="post_text">{{$post->text}}</p>
                 @if ($post->tonality == 0)
-                    <div class="alert alert-secondary col-5" onclick="sentiment()" role="alert">
+                    <div style="cursor: pointer;" class="alert alert-secondary col-5" onclick="sentiment()" role="alert">
                         <center>Тональность не определена</center>
                     </div>
                 @endif

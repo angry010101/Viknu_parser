@@ -213,7 +213,7 @@
             <p>
                 <button type="button" class="btn btn-outline-primary" onclick="save()">Сохранить изменения</button>
                 <button id="parsing-data" type="button" class="btn btn-success" onclick="parse()">Сбор данных</button>
-                <button id="parsing-data" type="button" class="btn btn-info" onclick="sentiment()">Анализ данных (test)</button>
+{{--                <button id="parsing-data" type="button" class="btn btn-info" onclick="sentiment()">Анализ данных (test)</button>--}}
                 <button onclick="window.location='{{ route("posts") }}'" id="view-data" type="button" class="btn btn-info" hidden>Просмотр данных</button>
             </p>
 
