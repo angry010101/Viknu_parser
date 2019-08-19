@@ -43,7 +43,7 @@
 
         $.ajax({
             url:'/sentiment',
-            type: 'GET',
+            type: 'POST',
             headers: {
                 'X-CSRF-TOKEN': '{{csrf_token()}}'
             },

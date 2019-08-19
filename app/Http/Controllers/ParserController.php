@@ -160,7 +160,7 @@ class ParserController extends Controller
     }
 
 
-    public function sentiment()
+    public function sentiment(Request $req)
     {
 
         $tr = new GoogleTranslate();
@@ -175,11 +175,26 @@ class ParserController extends Controller
         $language = $cloud->language();
 
         // The text to analyse
-        $text = $tr->translate('Привет мир!');
+        $text = $tr->translate($req->post()['text']);
 
         // Detect the sentiment of the text
         $annotation = $language->analyzeSentiment($text);
         $sentiment = $annotation->sentiment();
+
+        $post = Posts::find($req->post()['post']);
+
+        if($sentiment['score'] === 0){
+            $tonality = 1;
+        }elseif ($sentiment['score'] > 0){
+            $tonality = 2;
+        }elseif ($sentiment['score'] < 0){
+            $tonality = 3;
+        }else{
+            $tonality = 4;
+        }
+
+        $post->tonality = $tonality;
+        $post->save();
 
         echo 'Source text: ' . $text . 'Sentiment Score: ' . $sentiment['score'] . ', Magnitude: ' . $sentiment['magnitude'];
     }
