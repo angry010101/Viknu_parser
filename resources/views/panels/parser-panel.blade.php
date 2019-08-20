@@ -30,8 +30,6 @@
         }).done(function (data) {
             if(data == 'success') {
                 $('#progress-parsing-bar').width('100%');
-                $('#view-data').removeAttr("hidden");
-                $('#view-data').removeAttr("disabled");
             }else {
                 alert('Произошла ошибка, перезагрузите страницу!')
             }
@@ -55,11 +53,6 @@
             }
         });
 
-    }
-
-    function save() {
-                $('#view-data').attr("disabled", true);
-                $('#parsing-data').attr("disabled", false);
     }
 </script>
 <!-- Modal -->
@@ -209,14 +202,15 @@
 
 
             <hr>
-
+        <form method="POST">
+            @csrf
             <p>
-                <button type="button" class="btn btn-outline-primary" onclick="save()">Сохранить изменения</button>
                 <button id="parsing-data" type="button" class="btn btn-success" onclick="parse()">Сбор данных</button>
 {{--                <button id="parsing-data" type="button" class="btn btn-info" onclick="sentiment()">Анализ данных (test)</button>--}}
-                <button onclick="window.location='{{ route("posts") }}'" id="view-data" type="button" class="btn btn-info" hidden>Просмотр данных</button>
+                <button onclick="window.location='{{ route("posts") }}'" id="view-data" type="button" class="btn btn-info">Список новостей</button>
+                <button onclick="window.location='{{ route("report") }}'" id="view-data" type="button" class="btn btn-secondary">Отчёт</button>
             </p>
-
+        </form>
             {!! $chart1->script() !!}
 
     </div>

@@ -55,13 +55,10 @@ Route::group(['middleware' => ['auth', 'activated', 'activity', 'twostep']], fun
     //  Parser Route - Redirect based on user role is in controller.
     Route::get('/parser', ['as' => 'public.home',   'uses' => 'ParserController@index']);
     Route::post('/parser', 'ParserController@store')->name('parser.store');
-
-  /*  Route::get('/marketplace/{id}', ['as' => 'marketplace', 'uses' => 'StockController@getChartById']);
-    Route::get('/marketplace/chart', ['as' => 'marketplace', 'uses' => 'StockController@chart']); */
-
-    //  Posts Route - Redirect based on user role is in controller.
-    Route::get('/posts', ['as' => 'posts',   'uses' => 'PostsController@index']);
-    Route::get('/posts/{id}', ['as' => 'post',   'uses' => 'PostsController@getPostById']);
+    Route::get('/parser/report', ['as' => 'report', 'uses' => 'ReportController@index']);
+    Route::get('/parser/report/download', ['as' => 'report.download', 'uses' => 'ReportController@index']);
+    Route::get('parser/posts', ['as' => 'posts',   'uses' => 'PostsController@index']);
+    Route::get('parser/posts/{id}', ['as' => 'post',   'uses' => 'PostsController@getPostById']);
 
     // Show users profile - viewable by other users.
     Route::get('profile/{username}', [
@@ -147,3 +144,4 @@ Route::post('savesite', ['as' => 'savesite', 'uses' => 'ParserController@store']
 
 //Analytics sentiment
 Route::post('sentiment', ['as' => 'sentiment', 'uses' => 'ParserController@sentiment']);
+
