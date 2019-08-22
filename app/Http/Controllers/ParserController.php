@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Groups;
 use App\Models\Sites;
 use App\Models\Posts;
 use Goutte\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Charts\PostList;
 use Google\Cloud\Core\ServiceBuilder;
@@ -67,6 +69,8 @@ class ParserController extends Controller
     public function index()
     {
         $sites = Sites::all();
+        $groups = Groups::all();
+        $groups_content = DB::table('groups_content')->get();
 
         $today_users = Posts::whereDate('created_at', today())->count();
         $yesterday_users = Posts::whereDate('created_at', today()->subDays(1))->count();
@@ -78,7 +82,7 @@ class ParserController extends Controller
         $chart1->labels(['Позавчера', 'Вчера', 'Сегодня']);
         $chart1->dataset('Статьи', 'line', [$users_2_days_ago, $yesterday_users, $today_users]);
 
-        return view('pages.user.parser', compact('sites', 'chart1'));
+        return view('pages.user.parser', compact('sites', 'chart1', 'groups', 'groups_content'));
     }
 
     /**
@@ -89,6 +93,8 @@ class ParserController extends Controller
     public function parse(Request $req)
     {
         $sites = [];
+
+        return $req->input('groups');
 
         $selected = json_decode($req->getContent(), false);
 
@@ -197,6 +203,44 @@ class ParserController extends Controller
         $post->save();
 
         echo 'Source text: ' . $text . 'Sentiment Score: ' . $sentiment['score'] . ', Magnitude: ' . $sentiment['magnitude'];
+    }
+
+    public function saveGroup(Request $req){
+
+        $validator = Validator::make($req->all(),
+            [
+                'groupName'      => 'required|max:255',
+                'groupSites'     => 'required',
+            ],
+            [
+                'groupName.required'      => 'Укажите название группы!',
+                'groupSites.required'     => 'Не выбрано ни одного источника!',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $group = Groups::create([
+            'name'    => $req->input('groupName'),
+        ]);
+
+        $group->save();
+
+
+        foreach ($req->input('groupSites') as $site){
+            DB::table('groups_content')->insert(
+                [
+                    'group_id' => $group->id,
+                    'site_id'  => $site
+                ]
+            );
+        }
+
+        return redirect()->back();
+
+
     }
 
 }
