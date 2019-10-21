@@ -70,7 +70,6 @@
             @if (Route::has('login'))
                 <div class="top-right links">
                     @if (Auth::check())
-                        <a href="{{ url('/home') }}">Главная</a>
                         <a href="{{ url('/parser') }}">Сбор новостей</a>
                         <a class="dropdown-item {{ Request::is('profile/'.Auth::user()->name, 'profile/'.Auth::user()->name . '/edit') ? 'active' : null }}" href="{{ url('/profile/'.Auth::user()->name) }}">
                             {!! trans('titles.profile') !!}
@@ -100,8 +99,8 @@
                 <div class="links">
                     @if (Route::has('login'))
                         @if (Auth::check())
-                    <a href="{{ url('/home') }}">Home</a>
                     <a href="{{ url('/parser') }}">Сбор новостей</a>
+                    <a href="{{ url('/posts') }}">Новости</a>
                     @else
                     <a href="{{ url('/login') }}">Вход</a>
                     <a href="{{ url('/register') }}">Регистрация пользователя</a>
