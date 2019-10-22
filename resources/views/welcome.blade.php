@@ -104,7 +104,7 @@
                     @if (Route::has('login'))
                         @if (Auth::check())
                     <a href="{{ url('/parser') }}">Сбор новостей</a>
-                    <a href="{{ url('/posts') }}">Новости</a>
+                    <a href="{{ url('/parser/posts') }}">Новости</a>
                     @else
                     <a href="{{ url('/login') }}">Вход</a>
                     <a href="{{ url('/register') }}">Регистрация пользователя</a>

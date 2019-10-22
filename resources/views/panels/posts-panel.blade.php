@@ -65,7 +65,7 @@
                         <center>Ошибка определения тональности</center>
                     </div>
                 @endif
-                <button onclick="window.location='{{ url('/posts', $post->id) }}'" id="view-data" type="button" class="btn btn-info">Посмотреть</button>
+                <button onclick="window.location='{{ url('/parser/posts', $post->id) }}'" id="view-data" type="button" class="btn btn-info">Посмотреть</button>
 
             </div>
             @endforeach

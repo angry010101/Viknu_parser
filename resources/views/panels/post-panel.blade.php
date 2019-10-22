@@ -80,7 +80,7 @@
                         <center>Ошибка определения тональности</center>
                     </div>
                 @endif
-                <button onclick="window.location='{{ url('/posts', $post->id + 1) }}'" id="view-data" type="button" class="btn btn-info">Следующая новость</button>
+                <button onclick="window.location='{{ url('/parser/posts', $post->id + 1) }}'" id="view-data" type="button" class="btn btn-info">Следующая новость</button>
             </div>
         </div>
     </div>
