@@ -167,32 +167,12 @@
             </div>
             @endforeach
         </div>
-        <p>
-            <small>
-                Data has already been parsed.
-            </small>
-        </p>
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" onclick="save()">
-                Добавить новый источник
-            </button>
+        <br />
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" onclick="save()">
+            Добавить новый источник
+        </button>
         <hr>
-
-        <p>
-            You have
-                <strong>
-                    @role('admin')
-                       Admin
-                    @endrole
-                    @role('user')
-                       User
-                    @endrole
-                </strong>
-            Access
-        </p>
-
-        <hr>
-
         <p>
             Parsing Data (<code>last parsing 13.03.2019 09:23</code>):
         <div class="progress">
