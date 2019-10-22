@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Profile;
 use App\Models\User;
 use App\Traits\ActivationTrait;
 use App\Traits\CaptchaTrait;
@@ -101,6 +102,7 @@ class RegisterController extends Controller
     {
         $ipAddress = new CaptureIpTrait();
         $role = Role::where('slug', '=', 'unverified')->first();
+        $profile = new Profile();
 
         $user = User::create([
                 'name'              => $data['name'],
@@ -112,7 +114,8 @@ class RegisterController extends Controller
                 'signup_ip_address' => $ipAddress->getClientIp(),
                 'activated'         => !config('settings.activation'),
             ]);
-
+            
+        $user->profile()->save($profile);
         $user->attachRole($role);
         $this->initiateEmailActivation($user);
 
