@@ -9,6 +9,34 @@
 
 @endphp
 
+<script>
+    function sentiment() {
+
+        let text = document.getElementById('post_text').innerText;
+        console.log(text);
+
+        $.ajax({
+            url:'/sentiment',
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{csrf_token()}}'
+            },
+            data: {
+                'text' : text,
+                'post' : '{{$post->id}}'
+            },
+
+        }).done(function (data) {
+            if(data) {
+                location.reload();
+            }else {
+                alert('Произошла ошибка, перезагрузите страницу!')
+            }
+        });
+
+    }
+</script>
+
 <style>
 
 </style>
@@ -26,9 +54,9 @@
             <div class="container">
                 <h1 class="display-8">{{$post->title}}</h1>
                 <P><code>{{$post->date}} --- {{$post->site}}</code></P>
-                <p>{{$post->text}}</p>
+                <p id="post_text">{{$post->text}}</p>
                 @if ($post->tonality == 0)
-                    <div class="alert alert-secondary col-5" role="alert">
+                    <div style="cursor: pointer;" class="alert alert-secondary col-5" onclick="sentiment()" role="alert">
                         <center>Тональность не определена</center>
                     </div>
                 @endif
