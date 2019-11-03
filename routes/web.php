@@ -144,4 +144,5 @@ Route::post('savesite', ['as' => 'savesite', 'uses' => 'ParserController@store']
 
 //Analytics sentiment
 Route::post('sentiment', ['as' => 'sentiment', 'uses' => 'ParserController@sentiment']);
+Route::post('label_post_sentiment', ['as' => 'label_post_sentiment', 'uses' => 'ParserController@label_post_sentiment']);
 

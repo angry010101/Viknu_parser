@@ -159,6 +159,16 @@ class ParserController extends Controller
         return('success');
     }
 
+    public function label_post_sentiment (Request $req)
+    {
+        $manual_tonality = $req->post()['sentiment'];
+        $post = Posts::find($req->post()['post']);
+        $post->manual_tonality = $manual_tonality;
+        $post->save();
+
+        return 'success';
+    }
+
 
     public function sentiment(Request $req)
     {
